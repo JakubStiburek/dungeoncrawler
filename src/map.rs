@@ -18,9 +18,10 @@ impl Map {
             tiles: vec![TileType::Floor; NUM_TILES],
         }
     }
-    pub fn render(&self, ctx: &mut BTerm) {
-        for y in 0..SCREEN_HEIGHT {
-            for x in 0..SCREEN_WIDTH {
+    pub fn render(&self, ctx: &mut BTerm, camera: &Camera) {
+        ctx.set_active_console(0);
+        for y in camera.top_y..camera.bottom_y {
+            for x in camera.left_x..camera.right_x {
                 let index = map_index(x, y);
                 match self.tiles[index] {
                     TileType::Floor => {
