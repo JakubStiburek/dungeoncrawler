@@ -13,15 +13,19 @@ pub fn spawn_player(ecs: &mut World, pos: Point) {
     );
 }
 
-pub fn spawn_monster(ecs: &mut World, pos: Point, monster: Monster) {
-    let glyph = to_cp437(monster.glyph);
+pub fn spawn_monster(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Point,) {
     ecs.push(
         (
-            monster,
+            Enemy,
             pos,
             Render {
                 color: ColorPair::new(WHITE, BLACK),
-                glyph,
+                glyph: match rng.range(0, 4) {
+                    0 => to_cp437('E'),
+                    1 => to_cp437('O'),
+                    2 => to_cp437('o'),
+                    _ => to_cp437('g'),
+                },
             }
         )
     );
