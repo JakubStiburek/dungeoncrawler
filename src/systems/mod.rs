@@ -5,8 +5,15 @@ mod collisions;
 mod random_move;
 mod end_turn;
 mod movement;
+mod hud;
 
 use crate::prelude::*;
+
+pub fn build_general_scheduler() -> Schedule {
+    Schedule::builder()
+        .add_system(hud::hud_system())
+        .build()
+}
 
 pub fn build_input_scheduler() -> Schedule {
     Schedule::builder()

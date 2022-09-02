@@ -32,6 +32,7 @@ struct State {
     input_systems: Schedule,
     player_systems: Schedule,
     monster_systems: Schedule,
+    general_systems: Schedule,
 }
 
 impl State {
@@ -54,7 +55,8 @@ impl State {
             resources,
             input_systems: build_input_scheduler(),
             player_systems: build_player_scheduler(),
-            monster_systems: build_monster_scheduler()
+            monster_systems: build_monster_scheduler(),
+            general_systems: build_general_scheduler(),
             
         }
     }
@@ -66,7 +68,10 @@ impl GameState for State {
         ctx.cls();
         ctx.set_active_console(1);
         ctx.cls();
+        ctx.set_active_console(2);
+        ctx.cls();
         self.resources.insert(ctx.key);
+        self.general_systems.execute(&mut self.ecs, &mut self.resources);
         let current_state = self.resources.get::<TurnState>().unwrap().clone();
         match current_state {
             TurnState::AwaitingInput => self.input_systems.execute(
@@ -92,8 +97,10 @@ fn main() -> BError {
         .with_tile_dimensions(32, 32)
         .with_resource_path("resources/")
         .with_font("dungeonfont.png", 32, 32)
+        .with_font("terminal8x8.png", 8, 8)
         .with_simple_console(DISPLAY_WIDTH, DISPLAY_HEIGHT, "dungeonfont.png")
         .with_simple_console_no_bg(DISPLAY_WIDTH, DISPLAY_HEIGHT, "dungeonfont.png")
+        .with_simple_console_no_bg(SCREEN_WIDTH*2, SCREEN_HEIGHT*2, "terminal8x8.png")
         .build()?;
     
     main_loop(context, State::new())
